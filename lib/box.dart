@@ -1,25 +1,29 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rotator/main.dart';
+import 'package:rotator/notifications.dart';
 
-class MyBox extends StatefulWidget {
+class Box extends StatefulWidget {
+  final int id;
+
+  Box({Key key, @required this.id}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => _MyBoxState();
+  State<StatefulWidget> createState() => _BoxState();
 }
 
-class _MyBoxState extends State<MyBox> with SingleTickerProviderStateMixin {
+class _BoxState extends State<Box> with SingleTickerProviderStateMixin {
+  int _id;
   Container _container;
-  MaterialColor _color = Colors.cyan;
+  MaterialColor _color = Colors.brown;
   AnimationController controller;
   Animation<double> animation;
   double _angle = 0;
-  Random _random = Random();
 
   @override
   Widget build(BuildContext context) {
+    _id = widget.id;
+    print("my id is: $_id");
     var size = _size(context);
 
     _container = Container(
@@ -28,27 +32,36 @@ class _MyBoxState extends State<MyBox> with SingleTickerProviderStateMixin {
       decoration: BoxDecoration(border: Border.all(), color: _color),
     );
 
-    Timer.periodic(Duration(seconds: _random.nextInt(10)), (timer) {
-      if(!MyAppState.animating) {
-        MyAppState.animating = true;
-        controller.forward();
-      }
-    });
-
     return GestureDetector(
       child: Transform.rotate(
           angle: _angle,
-          child: _container
+          child: NotificationListener<RotationNotification>(
+            onNotification: _initRotation,
+            child: _container,
+          )
       ),
       onTap: () {
+        print("ontap id: $_id");
         setState(() {
+          print("setstate id: $_id");
           controller.stop();
           _color = Colors.brown;
           _angle = 0;
-          MyAppState.animating = false;
+          TappedNotification(id: _id)
+            ..dispatch(context);
         });
       },
     );
+  }
+
+  bool _initRotation(RotationNotification n) {
+    print("Box $_id received ${n.id}");
+    if (n.id == _id) {
+      print("Box $_id rotating");
+      _color = Colors.cyan;
+      controller.forward();
+    }
+    return true;
   }
 
   @override
@@ -73,27 +86,15 @@ class _MyBoxState extends State<MyBox> with SingleTickerProviderStateMixin {
   }
 }
 
-class MyBoxes extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _MyBoxesState();
-}
-
-class _MyBoxesState extends State<MyBoxes> {
-  Widget _gridView;
-  final List<MyBox> boxes = List.generate(pow(boxesCount, 2), (index) {
-    return MyBox();
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    _gridView = GridView.count(crossAxisCount: boxesCount, children: boxes);
-    return _gridView;
-  }
-}
-
 double _size(BuildContext context) {
-  var width = MediaQuery.of(context).size.width;
-  var height = MediaQuery.of(context).size.height;
+  var width = MediaQuery
+      .of(context)
+      .size
+      .width;
+  var height = MediaQuery
+      .of(context)
+      .size
+      .height;
 
   return width < height ? width / boxesCount : height / boxesCount;
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rotator/my_widget.dart';
+import 'package:rotator/boxes.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,8 +11,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  static bool animating = false;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +19,7 @@ class MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: Text('Rotator'),
           ),
-          body: MyBoxes(),
+          body: Boxes(),
         )
     );
   }
