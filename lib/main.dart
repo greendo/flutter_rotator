@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rotator/boxes.dart';
+import 'package:rotator/rotator.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,14 +15,17 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Rotator',
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text('Rotator'),
-          ),
-          body: Boxes(),
-        )
+    return Provider<Rotor>.value(
+      value: new Rotor(),
+      child: MaterialApp(
+          title: 'Rotator',
+          home: Scaffold(
+            appBar: AppBar(
+              title: Text('Rotator'),
+            ),
+            body: Boxes(),
+          )
+      ),
     );
   }
 }
