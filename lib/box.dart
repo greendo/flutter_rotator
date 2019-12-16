@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 class Box extends StatefulWidget {
   final int id;
 
-  Box({Key key, @required this.id}) : super(key: key);
+  final Function() notifyParent;
+
+  Box({Key key, @required this.id, @required this.notifyParent}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _BoxState();
@@ -18,7 +20,7 @@ class _BoxState extends State<Box>
     implements Rotatable {
   int _id;
   Container _container;
-  MaterialColor _color = Colors.brown;
+  Color _color = CALM;
   AnimationController _controller;
   Animation<double> _animation;
   double _angle = 0;
@@ -33,7 +35,7 @@ class _BoxState extends State<Box>
     _container = Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(border: Border.all(), color: _color),
+      decoration: BoxDecoration(border: Border.all(color: BORDER), color: _color),
     );
 
     return GestureDetector(
@@ -46,7 +48,7 @@ class _BoxState extends State<Box>
 
   @override
   void rotate() {
-    _color = Colors.cyan;
+    _color = MOVING;
     _controller.forward();
   }
 
@@ -54,7 +56,7 @@ class _BoxState extends State<Box>
   void stop() {
     setState(() {
       _controller.stop();
-      _color = Colors.brown;
+      _color = CALM;
       _angle = 0;
     });
   }
