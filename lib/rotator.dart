@@ -51,5 +51,6 @@ class Rotor {
 
 class Rotatable {
   void rotate() {}
+
   void stop() {}
 }

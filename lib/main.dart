@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rotator/boxes.dart';
 import 'package:rotator/rotator.dart';
+import 'package:rotator/score.dart';
 
 final int boxesCount = 4;
 
@@ -31,6 +32,7 @@ class MyAppState extends State<MyApp> {
             body: Column(
               children: <Widget>[
                 Expanded(child: Boxes()),
+                Score()
               ],
             ),
             backgroundColor: CALM,
@@ -38,12 +40,3 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
-
-Text _text(String t) => Text(
-      t,
-      style: TextStyle(fontStyle: FontStyle.italic, color: TEXT),
-    );
-
-//_text("Total taps: ${r.taps}"),
-//_text("Delta reaction: ${r.delta}"),
-//_text("Last reaction: ${r.last}"),

@@ -3,13 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:rotator/main.dart';
 import 'package:rotator/rotator.dart';
 import 'package:provider/provider.dart';
+import 'package:rotator/score.dart';
 
 class Box extends StatefulWidget {
   final int id;
 
-  final Function() notifyParent;
-
-  Box({Key key, @required this.id, @required this.notifyParent}) : super(key: key);
+  Box({Key key, @required this.id}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _BoxState();
@@ -40,8 +39,14 @@ class _BoxState extends State<Box>
 
     return GestureDetector(
       child: Transform.rotate(angle: _angle, child: _container),
-      onTap: () {
+      onTapDown: (TapDownDetails d) {
         r.stop(_id);
+
+        ScoreNotification(
+            total: r.taps.toString(),
+            delta: r.delta.toString(),
+            last: r.last.toString())
+          ..dispatch(context);
       },
     );
   }
