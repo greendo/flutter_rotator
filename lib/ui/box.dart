@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rotator/main.dart';
-import 'package:rotator/rotator.dart';
+import 'package:rotator/utils/notifier.dart';
+import 'package:rotator/utils/rotator.dart';
 import 'package:provider/provider.dart';
-import 'package:rotator/score.dart';
 
 class Box extends StatefulWidget {
   final int id;
@@ -19,7 +19,7 @@ class _BoxState extends State<Box>
     implements Rotatable {
   int _id;
   Container _container;
-  Color _color = CALM;
+  Color _color = calm;
   AnimationController _controller;
   Animation<double> _animation;
   double _angle = 0;
@@ -28,32 +28,33 @@ class _BoxState extends State<Box>
   Widget build(BuildContext context) {
     _id = widget.id;
     var size = _size(context);
-    Rotor r = Provider.of<Rotor>(context);
-    r.subscribe(_id, this);
+    ScoreNotifier sn = Provider.of<ScoreNotifier>(context);
+    Rotor rotor = sn.rotor;
+    rotor.subscribe(_id, this);
 
     _container = Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(border: Border.all(color: BORDER), color: _color),
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: border,
+          ),
+          color: _color,
+          borderRadius: BorderRadius.circular(5)),
     );
 
     return GestureDetector(
       child: Transform.rotate(angle: _angle, child: _container),
       onTapDown: (TapDownDetails d) {
-        r.stop(_id);
-
-        ScoreNotification(
-            total: r.taps.toString(),
-            delta: r.delta.toString(),
-            last: r.last.toString())
-          ..dispatch(context);
+        sn.notify();
+        rotor.stop(_id);
       },
     );
   }
 
   @override
   void rotate() {
-    _color = MOVING;
+    _color = moving;
     _controller.forward();
   }
 
@@ -61,7 +62,7 @@ class _BoxState extends State<Box>
   void stop() {
     setState(() {
       _controller.stop();
-      _color = CALM;
+      _color = calm;
       _angle = 0;
     });
   }

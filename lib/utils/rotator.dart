@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'main.dart';
+import '../main.dart';
 
 class Rotor {
   final List<Rotatable> _rotors = new List(pow(boxesCount, 2));
@@ -35,7 +35,7 @@ class Rotor {
   void stop(int id) {
     if (_current == id) {
       DateTime now = DateTime.now();
-      last = _then.difference(now);
+      last = now.difference(_then);
       if (taps == 0) {
         delta = last;
       } else {
@@ -47,10 +47,20 @@ class Rotor {
       _current = null;
     }
   }
+
+  RotorData produceData() {
+    return RotorData(taps: taps, delta: delta, last: last);
+  }
 }
 
 class Rotatable {
   void rotate() {}
-
   void stop() {}
+}
+
+class RotorData {
+  final int taps;
+  final Duration delta, last;
+
+  const RotorData({this.taps, this.delta, this.last});
 }
